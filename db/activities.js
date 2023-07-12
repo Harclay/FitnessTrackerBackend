@@ -32,7 +32,6 @@ async function getAllActivities() {
 
     return rows;
   } catch (error) {
-    console.log("Error in getAllActivities");
     throw error;
   }
 }

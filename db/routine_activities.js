@@ -80,7 +80,6 @@ async function updateRoutineActivity({ id, ...fields }) {
       return routine_activity;
     }
   } catch (error) {
-    console.log("ERROR IN updateRoutineActivity");
     throw error;
   }
 }

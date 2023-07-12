@@ -97,11 +97,19 @@ async function getAllRoutinesByUser({ username }) {
       [username]
     );
 
-    return await attachActivitiesToRoutines(routines);
+    console.log("Routines from DB:", routines);
+
+    const routinesWithActivities = await attachActivitiesToRoutines(routines);
+
+    console.log("Routines with Activities:", routinesWithActivities);
+
+    return routinesWithActivities;
   } catch (error) {
     throw error;
   }
 }
+
+
 
 async function getPublicRoutinesByUser({ username }) {
   try {
