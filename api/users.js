@@ -16,51 +16,57 @@ const bcrypt = require("bcrypt");
 
 // POST /api/users/register
 router.post("/register", async (req, res, next) => {
-  const { username, password } = req.body;
-
-  try {
+    const { username, password } = req.body;
+  
+    // Checking if the username already exists
     const checkUserName = await getUserByUsername(username);
-
+  
     if (checkUserName) {
-      return res.json({
+      // If the username already exists, send an error response
+      res.send({
         error: "USERNAME ALREADY EXISTS",
         message: `User ${username} is already taken.`,
         name: "UsernameExists",
       });
     } else if (password.length < 8) {
-      return res.json({
+      // If the password is too short, send an error response
+      res.send({
         error: "PASSWORD TOO SHORT",
         message: "Password Too Short!",
         name: "ShortPassword",
       });
-    }
-
-    const user = await createUser({ username, password });
-
-    const token = jwt.sign(
-      {
-        id: user.id,
-        username,
-      },
-      JWT_SECRET,
-      {
-        expiresIn: "1w",
+    } else {
+      try {
+        // If the username is available and password length is valid, create the user
+        const user = await createUser({ username, password });
+  
+        // Generate a JWT token for the user
+        const token = jwt.sign(
+          {
+            id: user.id,
+            username,
+          },
+          JWT_SECRET,
+          {
+            expiresIn: "1w",
+          }
+        );
+  
+        // Send a success response with user details and token
+        res.send({
+          user: {
+            id: user.id,
+            username: username,
+          },
+          token: token,
+          message: "USER CREATED",
+        });
+      } catch (error) {
+        // Handle any errors that occurred during user creation
+        next(error);
       }
-    );
-
-    return res.json({
-      user: {
-        id: user.id,
-        username: username,
-      },
-      token: token,
-      message: "USER CREATED",
-    });
-  } catch (error) {
-    next(error);
-  }
-});
-
+    }
+  });
   
 
 // POST /api/users/login
