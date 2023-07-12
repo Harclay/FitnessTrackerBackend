@@ -53,7 +53,7 @@ router.post("/register", async (req, res, next) => {
         );
   
         // Send a success response with user details and token
-        res.send({
+        res.json({
           user: {
             id: user.id,
             username: username,
